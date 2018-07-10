@@ -20,6 +20,7 @@ test_labels = []#np.array([1,0,1,1,0])
 positive_points_filename = 'class1.csv'#'CHF_data.csv'
 negative_points_filename = 'class2.csv'#'COPD_data.csv'
 
+#Read in data from csv files
 with open(positive_points_filename, 'r') as f:
   reader = csv.reader(f)
   train_data.extend([[float(x[0]),float(x[1])] for x in list(reader)])
@@ -30,6 +31,7 @@ with open(negative_points_filename, 'r') as f:
 	train_data.extend([[float(x[0]),float(x[1])] for x in list(reader)])
 train_labels.extend([0 for i in range(len(train_data) - len(train_labels))])
 
+#build test and train datasets
 test_indexes = np.arange(0,len(train_data), 10)
 for index in sorted(test_indexes, reverse=True):
 	test_data.append(train_data[index])
@@ -40,6 +42,7 @@ for index in sorted(test_indexes, reverse=True):
 W = [0,0]
 b = 0
 
+#The following is a variety of training functions, each implementing a variation of gradient descent
 def SGD(train_data, train_labels, W, b, n=0.05, time=True):
 	errors = []
 	batch_indexes = np.random.choice(len(train_data), len(train_data), replace=False)
@@ -148,6 +151,7 @@ def Mini_Batch_SGD_without_repl_with_avg(train_data, train_labels, W, b, batch_s
 
 	return (W, b, train_data, train_labels)
 
+#Helper functions to evaluate model
 def evaluate_model(W,b,point):
 	x = point[0]
 	y = point[1]
@@ -177,6 +181,8 @@ def print_labels(W,b,data):
 # 		errors.extend(e)
 # 	return(W,b,errors)
 
+
+#Functions to run each of the training algorithms
 def train_SGD(W,b,train_data,train_labels,epochs,sample_rate=1,time=True):
 	errors = []
 	for i in range(epochs):
@@ -224,6 +230,8 @@ def train_mini_batch_without_repl_with_avg(W,b,train_data,train_labels,epochs,sa
 #for i in range(100):
 #	W,b = SGD(train_data, train_labels, W, b)
 
+
+#Code to time different functions
 #start = time.time()
 #W,b,a = train_SGD(W,b,train_data,train_labels,1,time=False)
 #W,b,a = train_mini_batch_with_repl_with_avg(W,b,train_data,train_labels,180,time=False)
@@ -237,6 +245,7 @@ def train_mini_batch_without_repl_with_avg(W,b,train_data,train_labels,epochs,sa
 # plt.plot(x,a)
 # plt.show()
 
+#Code to generate plots for the convergence based on batch_size
 W1,b1,e1 = train_mini_batch_with_repl_without_avg(W,b,train_data,train_labels,1800,sample_rate=1,time=False, batch_size=10)
 W2,b2,e2 = train_mini_batch_with_repl_without_avg(W,b,train_data,train_labels,180,sample_rate=1,time=False, batch_size=100)
 W3,b3,e3 = train_mini_batch_with_repl_without_avg(W,b,train_data,train_labels,36,sample_rate=1,time=False, batch_size=500)
